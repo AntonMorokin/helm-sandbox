@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-pg
+  namespace: {{ .Values.global.namespace }}
+spec:
+  serviceName: {{ .Values.global.services.db }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "chart.selector" . }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: db-postgres
+        app.kubernetes.io/component: database
+{{ include "app.labels" . | indent 8 }}
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14.4-alpine
+          ports:
+            - name: tcp
+              protocol: TCP
+              containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pg-secret
+                  key: login
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pg-secret
+                  key: password
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: db-pg
+        resources:
+          requests:
+            storage: 128Mi
+        accessModes:
+          - ReadWriteOnce

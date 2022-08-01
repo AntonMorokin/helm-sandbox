@@ -1,0 +1,8 @@
+apiVersion: v2
+name: db-postgres
+description: PostgreSQL database for Car rent system.
+
+type: application
+
+version: 0.1.0
+appVersion: "1.16.0"

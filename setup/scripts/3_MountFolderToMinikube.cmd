@@ -1,0 +1,1 @@
+minikube mount %MINIKUBE_MOUNTED%:/etc/minikube

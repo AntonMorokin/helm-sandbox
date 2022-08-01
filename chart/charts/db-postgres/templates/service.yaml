@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.services.db }}
+spec:
+  type: ClusterIP
+  selector:
+    {{ include "chart.selector" . }}
+  ports:
+    - name: tcp
+      port: 5432
+      targetPort: tcp
