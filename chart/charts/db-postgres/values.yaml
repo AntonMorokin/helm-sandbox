@@ -1,3 +1,0 @@
-postgres:
-  config:
-    dataPath: "/etc/minikube/pgsql"
