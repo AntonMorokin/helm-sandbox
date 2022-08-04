@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.global.services.db }}
+  name: svc-{{ .Chart.Name }}
   namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/component: database
+{{ include "app.labels" . | indent 4 }}
 spec:
   type: ClusterIP
   clusterIP: none

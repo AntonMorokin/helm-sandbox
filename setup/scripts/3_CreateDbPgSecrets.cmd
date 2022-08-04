@@ -1,1 +1,1 @@
-kubectl create secret generic db-pg-secret --from-literal=login=postgres --from-literal=password=1234 -n car-rent-system
+kubectl create secret generic secrets-db-postgres --from-literal=login=postgres --from-literal=password=1234 -n car-rent-system

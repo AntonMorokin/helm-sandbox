@@ -1,5 +1,3 @@
 global:
   systemName: car-rent-system
   namespace: car-rent-system
-  services:
-    db: db-pg

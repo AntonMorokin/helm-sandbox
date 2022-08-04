@@ -16,6 +16,7 @@ helm.sh/chart: {{ include "chart.fullname" . }}
     Template for generic app's labels
 */}}
 {{- define "app.labels" -}}
+app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion }}
 app.kubernetes.io/part-of: {{ .Values.global.systemName }}
