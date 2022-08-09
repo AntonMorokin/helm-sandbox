@@ -57,7 +57,7 @@ namespace Crs.Backend.Data.Migrations
                     ClientId = table.Column<int>(type: "integer", nullable: false),
                     StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Mileage = table.Column<double>(type: "double precision", nullable: false),
+                    Mileage = table.Column<double>(type: "double precision", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

@@ -11,7 +11,7 @@ namespace Crs.Backend.Data.Builders
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.StartTime).IsRequired();
-            builder.Property(x => x.Mileage).IsRequired();
+            builder.Property(x => x.Mileage).IsRequired(false);
             builder.Property(x => x.Status).IsRequired().HasConversion<string>();
 
             builder

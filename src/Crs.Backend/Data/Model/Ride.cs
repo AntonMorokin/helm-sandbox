@@ -18,7 +18,7 @@ namespace Crs.Backend.Data.Model
 
         public DateTime? EndTime { get; set; }
 
-        public double Mileage { get; set; }
+        public double? Mileage { get; set; }
 
         public RideStatus Status { get; set; }
     }

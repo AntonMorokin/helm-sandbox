@@ -18,7 +18,8 @@ namespace Crs.Backend.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("crs")
-                .UseCollation("ru_RU.UTF8")
+                .UseCollation("ru_RU.utf8")
+                .HasAnnotation("Npgsql:DatabaseTemplate", "template0")
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -96,7 +97,7 @@ namespace Crs.Backend.Data.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<double>("Mileage")
+                    b.Property<double?>("Mileage")
                         .HasColumnType("double precision");
 
                     b.Property<DateTime>("StartTime")

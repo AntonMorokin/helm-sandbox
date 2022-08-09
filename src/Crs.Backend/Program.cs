@@ -1,7 +1,10 @@
+using Crs.Backend.Logic.Repositories.Implementations;
+using Crs.Backend.Logic.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace Crs.Backend
 {
@@ -11,26 +14,35 @@ namespace Crs.Backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var config = builder.Configuration;
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<Data.DataContext>(o =>
             {
-                var connectionString = builder.Configuration["DbConnectionString"];
+                var connectionString = config["DbConnectionString"];
                 o.UseNpgsql(connectionString);
             });
 
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+
             var app = builder.Build();
+
+            var pathBase = config["PathBase"];
+            if (!string.IsNullOrEmpty(pathBase))
+            {
+                app.UsePathBase(pathBase);
+            }
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseAuthorization();
-
 
             app.MapControllers();
 
