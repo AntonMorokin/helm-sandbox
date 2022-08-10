@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Crs.Backend.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220809180742_Initial")]
+    [Migration("20220810135748_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,91 +31,113 @@ namespace Crs.Backend.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Brand")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("brand");
 
                     b.Property<double>("Mileage")
-                        .HasColumnType("double precision");
+                        .HasColumnType("double precision")
+                        .HasColumnName("mileage");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("model");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("number");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cars");
 
                     b.HasIndex("Number")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_cars_number");
 
-                    b.ToTable("Cars", "crs");
+                    b.ToTable("cars", "crs");
                 });
 
             modelBuilder.Entity("Crs.Backend.Data.Model.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("BirthDate")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("birth_date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_clients");
 
-                    b.ToTable("Clients", "crs");
+                    b.ToTable("clients", "crs");
                 });
 
             modelBuilder.Entity("Crs.Backend.Data.Model.Ride", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CarId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("car_id");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime?>("EndTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_time");
 
                     b.Property<double?>("Mileage")
-                        .HasColumnType("double precision");
+                        .HasColumnType("double precision")
+                        .HasColumnName("mileage");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_time");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_rides");
 
-                    b.HasIndex("CarId");
+                    b.HasIndex("CarId")
+                        .HasDatabaseName("ix_rides_car_id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_rides_client_id");
 
-                    b.ToTable("Rides", "crs");
+                    b.ToTable("rides", "crs");
                 });
 
             modelBuilder.Entity("Crs.Backend.Data.Model.Ride", b =>
@@ -124,13 +146,15 @@ namespace Crs.Backend.Data.Migrations
                         .WithMany("Rides")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_rides_cars_car_id");
 
                     b.HasOne("Crs.Backend.Data.Model.Client", "Client")
                         .WithMany("Rides")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_rides_clients_client_id");
 
                     b.Navigation("Car");
 

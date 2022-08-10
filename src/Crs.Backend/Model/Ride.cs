@@ -18,9 +18,8 @@ namespace Crs.Backend.Model
 
         public RideStatus Status { get; set; }
 
-        public Ride(int id, Car car, Client client)
+        public Ride(Car car, Client client)
         {
-            Id = id;
             Car = car;
             Client = client;
             Status = RideStatus.Created;

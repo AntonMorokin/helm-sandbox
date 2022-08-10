@@ -16,12 +16,12 @@ namespace Crs.Backend.Model
 
         public ICollection<Ride> Rides { get; } = new List<Ride>(8);
 
-        public Car(int id, string number, string brand, string model)
+        public Car(string number, string brand, string model, double mileage)
         {
-            Id = id;
             Number = number;
             Brand = brand;
             Model = model;
+            Mileage = mileage;
         }
     }
 }

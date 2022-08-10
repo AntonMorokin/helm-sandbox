@@ -16,19 +16,21 @@ namespace Crs.Backend
 
             var config = builder.Configuration;
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(o => o.Conventions.Add(Conventions.DashedTokenTransformer.CreateConvention()));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<Data.DataContext>(o =>
             {
                 var connectionString = config["DbConnectionString"];
-                o.UseNpgsql(connectionString);
+
+                o.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
             });
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+            builder.Services.AddScoped<ICarsRepository, CarsRepository>();
 
             var app = builder.Build();
 
