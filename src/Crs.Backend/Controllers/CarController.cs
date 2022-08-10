@@ -4,6 +4,7 @@ using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Crs.Backend.Controllers
@@ -54,7 +55,10 @@ namespace Crs.Backend.Controllers
             var newCar = new Car(request.Number, request.Brand, request.Model, request.Mileage);
             var id = await _carsRepository.AddNewCarAsync(newCar);
 
-            return Created($"car/{id}", id);
+            var location = Url.Action("GetById", new { id })
+                ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
+
+            return Created(location, id);
         }
 
         private static CarResponse CreateResponse(Car car)

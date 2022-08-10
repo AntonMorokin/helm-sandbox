@@ -57,7 +57,10 @@ namespace Crs.Backend.Controllers
             var client = new Client(request.FirstName, request.LastName, DateOnly.FromDateTime(request.BirdthDate));
             var id = await _clientsRepository.AddNewClientAsync(client);
 
-            return Created($"client/{id}", id);
+            var location = Url.Action("GetById", new { id })
+                ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
+
+            return Created(location, id);
         }
 
         private static ClientResponse CreateResponse(Client client)

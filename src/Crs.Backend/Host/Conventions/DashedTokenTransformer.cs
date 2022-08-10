@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using System.Text.RegularExpressions;
 
-namespace Crs.Backend.Conventions
+namespace Crs.Backend.Host.Conventions
 {
     internal sealed class DashedTokenTransformer : IOutboundParameterTransformer
     {

@@ -1,3 +1,4 @@
+using Crs.Backend.Host.Conventions;
 using Crs.Backend.Logic.Repositories.Implementations;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +17,7 @@ namespace Crs.Backend
 
             var config = builder.Configuration;
 
-            builder.Services.AddControllers(o => o.Conventions.Add(Conventions.DashedTokenTransformer.CreateConvention()));
+            builder.Services.AddControllers(o => o.Conventions.Add(DashedTokenTransformer.CreateConvention()));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
