@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Crs.Backend.Controllers.Requests.Create
+namespace Crs.Backend.Host.Controllers.Responses
 {
-    public sealed class CreateNewClientRequest
+    public sealed class ClientResponse
     {
+        public int Id { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

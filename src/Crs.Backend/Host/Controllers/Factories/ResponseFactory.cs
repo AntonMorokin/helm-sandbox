@@ -1,9 +1,9 @@
-﻿using Crs.Backend.Controllers.Responses;
+﻿using Crs.Backend.Host.Controllers.Responses;
 using Crs.Backend.Model;
 using System;
 using System.Linq;
 
-namespace Crs.Backend.Controllers.Factories
+namespace Crs.Backend.Host.Controllers.Factories
 {
     internal static class ResponseFactory
     {

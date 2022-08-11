@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Crs.Backend.Controllers.Requests.Get.Clients
+namespace Crs.Backend.Host.Controllers.Requests.Get.Clients
 {
     public sealed class GetClientByIdRequest
     {

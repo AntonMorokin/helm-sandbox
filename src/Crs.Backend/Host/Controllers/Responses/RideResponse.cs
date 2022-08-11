@@ -1,7 +1,7 @@
 ﻿using Crs.Backend.Model;
 using System;
 
-namespace Crs.Backend.Controllers.Responses
+namespace Crs.Backend.Host.Controllers.Responses
 {
     public sealed class RideResponse
     {

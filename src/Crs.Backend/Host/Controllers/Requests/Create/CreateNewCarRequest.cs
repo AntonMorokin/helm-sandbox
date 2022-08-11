@@ -1,4 +1,4 @@
-﻿namespace Crs.Backend.Controllers.Requests.Create
+﻿namespace Crs.Backend.Host.Controllers.Requests.Create
 {
     public sealed class CreateNewCarRequest
     {

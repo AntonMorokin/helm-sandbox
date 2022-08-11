@@ -1,4 +1,4 @@
-﻿namespace Crs.Backend.Controllers.Requests.Get.Rides
+﻿namespace Crs.Backend.Host.Controllers.Requests.Get.Rides
 {
     public sealed class GetRidesRequest : GetRideRequestBase
     {

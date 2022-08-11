@@ -1,7 +1,7 @@
-﻿using Crs.Backend.Controllers.Factories;
-using Crs.Backend.Controllers.Requests.Create;
-using Crs.Backend.Controllers.Requests.Get.Rides;
-using Crs.Backend.Controllers.Responses;
+﻿using Crs.Backend.Host.Controllers.Factories;
+using Crs.Backend.Host.Controllers.Requests.Create;
+using Crs.Backend.Host.Controllers.Requests.Get.Rides;
+using Crs.Backend.Host.Controllers.Responses;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Crs.Backend.Controllers
+namespace Crs.Backend.Host.Controllers
 {
     [ApiController]
     [Route("[controller]")]
