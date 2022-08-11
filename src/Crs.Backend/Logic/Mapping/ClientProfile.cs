@@ -6,7 +6,7 @@ namespace Crs.Backend.Logic.Mapping
     {
         public ClientProfile()
         {
-            CreateMap<Data.Model.Client, Model.Client>();
+            CreateMap<Data.Model.Client, Model.Client>().ReverseMap();
         }
     }
 }

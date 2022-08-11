@@ -55,7 +55,7 @@ namespace Crs.Backend.Logic.Repositories.Implementations
             {
                 FirstName = newClient.FirstName,
                 LastName = newClient.LastName,
-                BirthDate = newClient.BirdthDate
+                BirthDate = newClient.BirthDate
             });
 
             await _dataContext.SaveChangesAsync();

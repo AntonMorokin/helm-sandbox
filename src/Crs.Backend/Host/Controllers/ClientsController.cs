@@ -64,7 +64,7 @@ namespace Crs.Backend.Host.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(int))]
         public async Task<IActionResult> CreateNewClientAsync([FromBody] CreateNewClientRequest request)
         {
-            var client = new Client(request.FirstName, request.LastName, DateOnly.FromDateTime(request.BirdthDate));
+            var client = new Client(request.FirstName, request.LastName, DateOnly.FromDateTime(request.BirthDate.Date));
             var id = await _clientsRepository.CreateNewClientAsync(client);
 
             var location = Url.Action("GetById", new { id })

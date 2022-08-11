@@ -8,6 +8,6 @@ namespace Crs.Backend.Host.Controllers.Requests.Create
 
         public string LastName { get; set; }
 
-        public DateTime BirdthDate { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

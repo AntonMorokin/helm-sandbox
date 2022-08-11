@@ -11,13 +11,13 @@ namespace Crs.Backend.Model
 
         public string LastName { get; set; }
 
-        public DateOnly BirdthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
 
         public Client(string firstName, string lastName, DateOnly birthDate)
         {
             FirstName = firstName;
             LastName = lastName;
-            BirdthDate = birthDate;
+            BirthDate = birthDate;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Crs.Backend.Host.Controllers.Factories;
 using Crs.Backend.Host.Controllers.Requests.Create;
 using Crs.Backend.Host.Controllers.Requests.Get.Rides;
+using Crs.Backend.Host.Controllers.Requests.Update.Rides;
 using Crs.Backend.Host.Controllers.Responses;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
@@ -90,6 +91,65 @@ namespace Crs.Backend.Host.Controllers
                  ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
 
             return Created(location, id);
+        }
+
+        [HttpPatch("{Id}/start")]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(RideStatus))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<IActionResult> StartRideAsync([FromQuery] StartRideRequest request)
+        {
+            var ride = await _ridesRepository.GetByIdAsync(true, true, request.Id);
+            if (ride is null)
+            {
+                return NotFound($"The ride with id={request.Id} does not exist.");
+            }
+
+            var newStatus = await _ridesRepository.StartRideAsync(ride);
+            var url = Url.Action("GetById", new { ride.Id })
+                ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
+
+            return Accepted(url, newStatus);
+        }
+
+        [HttpPatch("{Id}/finish")]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(RideStatus))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<IActionResult> FinishRideAsync([FromQuery] FinishRideRequest request)
+        {
+            var ride = await _ridesRepository.GetByIdAsync(true, true, request.Id);
+            if (ride is null)
+            {
+                return NotFound($"The ride with id={request.Id} does not exist.");
+            }
+
+            if (request.Mileage < 0)
+            {
+                return BadRequest("Mileage can not be negative.");
+            }
+
+            var newStatus = await _ridesRepository.FinishRideAsync(ride, request.Mileage);
+            var url = Url.Action("GetById", new { ride.Id })
+                ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
+
+            return Accepted(url, newStatus);
+        }
+
+        [HttpPatch("{Id}/cancel")]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(RideStatus))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<IActionResult> CancelRideAsync([FromQuery] CancelRideRequest request)
+        {
+            var ride = await _ridesRepository.GetByIdAsync(true, true, request.Id);
+            if (ride is null)
+            {
+                return NotFound($"The ride with id={request.Id} does not exist.");
+            }
+
+            var newStatus = await _ridesRepository.CancelRideAsync(ride);
+            var url = Url.Action("GetById", new { ride.Id })
+                ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
+
+            return Accepted(url, newStatus);
         }
     }
 }

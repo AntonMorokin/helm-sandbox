@@ -15,5 +15,11 @@ namespace Crs.Backend.Logic.Repositories.Interfaces
         Task<Ride?> GetByIdAsync(bool withClients, bool withCars, int rideId);
 
         Task<int> CreateNewRideAsync(Ride newRide);
+
+        Task<RideStatus> StartRideAsync(Ride ride);
+
+        Task<RideStatus> FinishRideAsync(Ride ride, double mileage);
+
+        Task<RideStatus> CancelRideAsync(Ride ride);
     }
 }

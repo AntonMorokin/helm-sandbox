@@ -42,6 +42,8 @@ namespace Crs.Backend.Logic.Repositories.Implementations
             if (withCars) ridesQuery = ridesQuery.Include(x => x.Car);
 
             var rides = await ridesQuery.AsNoTracking()
+                .OrderBy(x => x.StartTime)
+                .ThenBy(x => x.EndTime)
                 .Skip(skip)
                 .Take(count)
                 .ToArrayAsync();
@@ -57,6 +59,8 @@ namespace Crs.Backend.Logic.Repositories.Implementations
 
             var rides = await ridesQuery.AsNoTracking()
                 .Where(x => x.ClientId == clientId)
+                .OrderBy(x => x.StartTime)
+                .ThenBy(x => x.EndTime)
                 .Skip(skip)
                 .Take(count)
                 .ToArrayAsync();
@@ -72,6 +76,8 @@ namespace Crs.Backend.Logic.Repositories.Implementations
 
             var rides = await ridesQuery.AsNoTracking()
                 .Where(x => x.CarId == carId)
+                .OrderBy(x => x.StartTime)
+                .ThenBy(x => x.EndTime)
                 .Skip(skip)
                 .Take(count)
                 .ToArrayAsync();
@@ -97,6 +103,54 @@ namespace Crs.Backend.Logic.Repositories.Implementations
             await _dataContext.SaveChangesAsync();
 
             return entry.Entity.Id;
+        }
+
+        public async Task<RideStatus> StartRideAsync(Ride ride)
+        {
+            if (ride.Status != RideStatus.Created)
+            {
+                throw new InvalidOperationException($"The ride with id={ride.Id} has been already started or ended.");
+            }
+
+            ride.Start();
+
+            var entity = _mapper.Map<Data.Model.Ride>(ride);
+
+            var entry = _dataContext.Rides.Update(entity);
+            await _dataContext.SaveChangesAsync();
+
+            return _mapper.Map<RideStatus>(entry.Entity.Status);
+        }
+
+        public async Task<RideStatus> FinishRideAsync(Ride ride, double mileage)
+        {
+            if (ride.Status != RideStatus.InProgress)
+            {
+                throw new InvalidOperationException($"The ride with id={ride.Id} has not been started.");
+            }
+
+            ride.Finish(mileage);
+
+            var entry = _dataContext.Rides.Update(_mapper.Map<Data.Model.Ride>(ride));
+            await _dataContext.SaveChangesAsync();
+
+            return _mapper.Map<RideStatus>(entry.Entity.Status);
+        }
+
+        public async Task<RideStatus> CancelRideAsync(Ride ride)
+        {
+            if (ride.Status == RideStatus.Finished
+                || ride.Status == RideStatus.Canceled)
+            {
+                throw new InvalidOperationException($"The ride with id={ride.Id} is already {ride.Status.ToString().ToLower()}.");
+            }
+
+            ride.Cancel();
+
+            var entry = _dataContext.Rides.Update(_mapper.Map<Data.Model.Ride>(ride));
+            await _dataContext.SaveChangesAsync();
+
+            return _mapper.Map<RideStatus>(entry.Entity.Status);
         }
     }
 }

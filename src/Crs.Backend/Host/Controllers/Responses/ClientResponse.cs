@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Crs.Backend.Host.Controllers.Responses
 {
@@ -11,6 +10,6 @@ namespace Crs.Backend.Host.Controllers.Responses
 
         public string LastName { get; set; }
 
-        public DateTime BirdthDate { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

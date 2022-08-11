@@ -1,7 +1,6 @@
 ﻿using Crs.Backend.Host.Controllers.Responses;
 using Crs.Backend.Model;
 using System;
-using System.Linq;
 
 namespace Crs.Backend.Host.Controllers.Factories
 {
@@ -15,7 +14,7 @@ namespace Crs.Backend.Host.Controllers.Factories
                 Id = client.Id,
                 FirstName = client.FirstName,
                 LastName = client.LastName,
-                BirdthDate = client.BirdthDate.ToDateTime(ZeroTime)
+                BirthDate = client.BirthDate.ToDateTime(ZeroTime, DateTimeKind.Utc)
             };
 
         public static CarResponse CreateResponse(Car car)

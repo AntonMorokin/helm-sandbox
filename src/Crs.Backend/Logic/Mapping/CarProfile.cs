@@ -6,7 +6,7 @@ namespace Crs.Backend.Logic.Mapping
     {
         public CarProfile()
         {
-            CreateMap<Data.Model.Car, Model.Car>();
+            CreateMap<Data.Model.Car, Model.Car>().ReverseMap();
         }
     }
 }
