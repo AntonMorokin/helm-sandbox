@@ -1,23 +1,34 @@
-﻿using Crs.Backend.Controllers.Requests;
+﻿using Crs.Backend.Controllers.Factories;
+using Crs.Backend.Controllers.Requests.Create;
 using Crs.Backend.Controllers.Responses;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Crs.Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public sealed class CarController : ControllerBase
+    public sealed class CarsController : ControllerBase
     {
         private readonly ICarsRepository _carsRepository;
 
-        public CarController(ICarsRepository carsRepository)
+        public CarsController(ICarsRepository carsRepository)
         {
             _carsRepository = carsRepository;
+        }
+
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CarResponse>))]
+        public async Task<IActionResult> GetAsync([FromQuery] int? skip, [FromQuery] int count)
+        {
+            var cars = await _carsRepository.GetAsync(skip ?? 0, count);
+            return Ok(cars.Select(ResponseFactory.CreateResponse));
         }
 
         [HttpGet("{id}")]
@@ -31,7 +42,7 @@ namespace Crs.Backend.Controllers
                 return NotFound();
             }
 
-            return Ok(CreateResponse(car));
+            return Ok(ResponseFactory.CreateResponse(car));
         }
 
         [HttpGet]
@@ -45,7 +56,7 @@ namespace Crs.Backend.Controllers
                 return NotFound();
             }
 
-            return Ok(CreateResponse(car));
+            return Ok(ResponseFactory.CreateResponse(car));
         }
 
         [HttpPut]
@@ -53,22 +64,12 @@ namespace Crs.Backend.Controllers
         public async Task<IActionResult> CreateNewCarAsync([FromBody] CreateNewCarRequest request)
         {
             var newCar = new Car(request.Number, request.Brand, request.Model, request.Mileage);
-            var id = await _carsRepository.AddNewCarAsync(newCar);
+            var id = await _carsRepository.CreateNewCarAsync(newCar);
 
             var location = Url.Action("GetById", new { id })
                 ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
 
             return Created(location, id);
         }
-
-        private static CarResponse CreateResponse(Car car)
-            => new()
-            {
-                Id = car.Id,
-                Number = car.Number,
-                Brand = car.Brand,
-                Model = car.Model,
-                Mileage = car.Mileage
-            };
     }
 }

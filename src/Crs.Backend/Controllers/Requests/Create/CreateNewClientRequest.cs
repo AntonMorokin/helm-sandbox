@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crs.Backend.Controllers.Requests
+namespace Crs.Backend.Controllers.Requests.Create
 {
     public sealed class CreateNewClientRequest
     {

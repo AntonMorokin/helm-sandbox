@@ -1,53 +1,63 @@
-﻿using Crs.Backend.Controllers.Requests;
+﻿using Crs.Backend.Controllers.Factories;
+using Crs.Backend.Controllers.Requests.Create;
+using Crs.Backend.Controllers.Requests.Get.Clients;
 using Crs.Backend.Controllers.Responses;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Crs.Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public sealed class ClientController : ControllerBase
+    public sealed class ClientsController : ControllerBase
     {
-        private static readonly TimeOnly ZeroTime = TimeOnly.MinValue;
-
         private readonly IClientsRepository _clientsRepository;
 
-        public ClientController(IClientsRepository clientsRepository)
+        public ClientsController(IClientsRepository clientsRepository)
         {
             _clientsRepository = clientsRepository;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ClientResponse>))]
+        public async Task<IActionResult> GetAsync([FromQuery] GetClientsRequest request)
+        {
+            var clients = await _clientsRepository.GetAsync(request.Skip ?? 0, request.Count);
+            return Ok(clients.Select(ResponseFactory.CreateResponse));
+        }
+
+        [HttpGet("{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetClientByIdRequest request)
         {
-            var client = await _clientsRepository.GetByIdAsync(id);
+            var client = await _clientsRepository.GetByIdAsync(request.Id);
             if (client is null)
             {
                 return NotFound();
             }
 
-            return Ok(CreateResponse(client));
+            return Ok(ResponseFactory.CreateResponse(client));
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClientResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetByNameAsync([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<IActionResult> GetByNameAsync([FromQuery] GetClientByNameRequest request)
         {
-            var client = await _clientsRepository.GetByNameAsync(firstName, lastName);
+            var client = await _clientsRepository.GetByNameAsync(request.FirstName, request.LastName);
             if (client is null)
             {
                 return NotFound();
             }
 
-            return Ok(CreateResponse(client));
+            return Ok(ResponseFactory.CreateResponse(client));
         }
 
         [HttpPut]
@@ -55,21 +65,12 @@ namespace Crs.Backend.Controllers
         public async Task<IActionResult> CreateNewClientAsync([FromBody] CreateNewClientRequest request)
         {
             var client = new Client(request.FirstName, request.LastName, DateOnly.FromDateTime(request.BirdthDate));
-            var id = await _clientsRepository.AddNewClientAsync(client);
+            var id = await _clientsRepository.CreateNewClientAsync(client);
 
             var location = Url.Action("GetById", new { id })
                 ?? throw new InvalidOperationException("Unable to get location for \"GetByIdAsync\" method");
 
             return Created(location, id);
         }
-
-        private static ClientResponse CreateResponse(Client client)
-            => new()
-            {
-                Id = client.Id,
-                FirstName = client.FirstName,
-                LastName = client.LastName,
-                BirdthDate = client.BirdthDate.ToDateTime(ZeroTime)
-            };
     }
 }

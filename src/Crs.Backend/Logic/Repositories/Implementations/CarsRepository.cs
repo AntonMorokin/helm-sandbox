@@ -3,6 +3,8 @@ using Crs.Backend.Data;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Crs.Backend.Logic.Repositories.Implementations
@@ -18,19 +20,33 @@ namespace Crs.Backend.Logic.Repositories.Implementations
             _mapper = mapper;
         }
 
+        public async Task<IReadOnlyCollection<Car>> GetAsync(int skip, int count)
+        {
+            var cars = await _dataContext.Cars.AsNoTracking()
+                .Skip(skip)
+                .Take(count)
+                .ToArrayAsync();
+
+            return _mapper.Map<IReadOnlyCollection<Car>>(cars);
+        }
+
         public async Task<Car?> GetByIdAsync(int carId)
         {
-            var car = await _dataContext.Cars.FirstOrDefaultAsync(x => x.Id == carId);
+            var car = await _dataContext.Cars.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == carId);
+
             return _mapper.Map<Car?>(car);
         }
 
         public async Task<Car?> GetByNumberAsync(string carNumber)
         {
-            var car = await _dataContext.Cars.FirstOrDefaultAsync(x => x.Number.ToUpper() == carNumber.ToUpper());
+            var car = await _dataContext.Cars.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Number.ToUpper() == carNumber.ToUpper());
+
             return _mapper.Map<Car?>(car);
         }
 
-        public async Task<int> AddNewCarAsync(Car newCar)
+        public async Task<int> CreateNewCarAsync(Car newCar)
         {
             var entry = _dataContext.Cars.Add(new Data.Model.Car
             {

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Crs.Backend
 {
@@ -17,7 +19,14 @@ namespace Crs.Backend
 
             var config = builder.Configuration;
 
-            builder.Services.AddControllers(o => o.Conventions.Add(DashedTokenTransformer.CreateConvention()));
+            builder.Services
+                .AddControllers(o => o.Conventions.Add(DashedTokenTransformer.CreateConvention()))
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -32,6 +41,7 @@ namespace Crs.Backend
 
             builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
             builder.Services.AddScoped<ICarsRepository, CarsRepository>();
+            builder.Services.AddScoped<IRidesRepository, RidesRepository>();
 
             var app = builder.Build();
 

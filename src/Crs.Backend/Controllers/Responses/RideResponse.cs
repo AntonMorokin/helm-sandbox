@@ -1,18 +1,15 @@
-﻿using System;
+﻿using Crs.Backend.Model;
+using System;
 
-namespace Crs.Backend.Data.Model
+namespace Crs.Backend.Controllers.Responses
 {
-    public class Ride
+    public sealed class RideResponse
     {
         public int Id { get; set; }
 
-        public int CarId { get; set; }
+        public ClientResponse? Client { get; set; }
 
-        public Car Car { get; set; }
-
-        public int ClientId { get; set; }
-
-        public Client Client { get; set; }
+        public CarResponse? Car { get; set; }
 
         public DateTime? StartTime { get; set; }
 

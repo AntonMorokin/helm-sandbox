@@ -5,15 +5,13 @@ namespace Crs.Backend.Model
 {
     public class Client
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
         public DateOnly BirdthDate { get; set; }
-
-        public ICollection<Ride> Rides { get; } = new List<Ride>(4);
 
         public Client(string firstName, string lastName, DateOnly birthDate)
         {
