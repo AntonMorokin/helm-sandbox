@@ -5,15 +5,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Crs.Backend
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +48,8 @@ namespace Crs.Backend
 
             var app = builder.Build();
 
+            await MigrateDatabaseAsync(app.Logger, app.Services);
+
             var pathBase = config["PathBase"];
             if (!string.IsNullOrEmpty(pathBase))
             {
@@ -60,6 +65,28 @@ namespace Crs.Backend
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static async Task MigrateDatabaseAsync(ILogger logger, IServiceProvider services)
+        {
+            var scopeFactory = services.GetRequiredService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+
+            using var dbContext = scope.ServiceProvider.GetRequiredService<Data.DataContext>();
+
+            logger.LogInformation("Starting migrating the database");
+
+            try
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while migrating the database");
+                throw;
+            }
+
+            logger.LogInformation("The database has been successfully migrated");
         }
     }
 }
