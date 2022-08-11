@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dp-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: backend-service
+{{ include "app.labels" . | indent 4 }}
+spec:
+  replicas: 2
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{ include "chart.selector" . }}
+  template:
+    metadata:
+        name: pod-{{ .Chart.Name }}
+        namespace: {{ .Release.Namespace }}
+        labels:
+          app.kubernetes.io/component: backend-service
+{{ include "app.labels" . | indent 10 }}
+    spec:
+      containers:
+        - name: backend
+          image: amorokin/crs-backend:{{ .Chart.AppVersion }}
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: CRS_BACKEND_DbConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-{{ .Chart.Name }}
+                  key: dbConnectionString
+            - name: CRS_BACKEND_PathBase
+              valueFrom:
+                configMapKeyRef:
+                  name: cm-{{ .Chart.Name }}
+                  key: pathBase
+          livenessProbe:
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            httpGet:
+              path: /ready
+              port: http

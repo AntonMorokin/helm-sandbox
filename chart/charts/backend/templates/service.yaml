@@ -4,14 +4,13 @@ metadata:
   name: svc-{{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/component: database
+    app.kubernetes.io/component: backend-service
 {{ include "app.labels" . | indent 4 }}
 spec:
   type: ClusterIP
-  clusterIP: none
   selector:
     {{ include "chart.selector" . }}
   ports:
-    - name: tcp
-      port: 5432
-      targetPort: tcp
+    - name: http
+      port: 5000
+      targetPort: http

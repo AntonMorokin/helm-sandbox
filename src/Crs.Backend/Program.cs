@@ -3,6 +3,7 @@ using Crs.Backend.Logic.Repositories.Implementations;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ namespace Crs.Backend
             var builder = WebApplication.CreateBuilder(args);
 
             var config = builder.Configuration;
+            config.AddEnvironmentVariables("CRS_BACKEND_");
 
             builder.Services
                 .AddControllers(o => o.Conventions.Add(DashedTokenTransformer.CreateConvention()))
@@ -54,6 +56,7 @@ namespace Crs.Backend
             if (!string.IsNullOrEmpty(pathBase))
             {
                 app.UsePathBase(pathBase);
+                app.Logger.LogInformation($"PathBase has been set to {pathBase}");
             }
 
             if (app.Environment.IsDevelopment())

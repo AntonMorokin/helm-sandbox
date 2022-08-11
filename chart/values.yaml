@@ -1,3 +1,4 @@
 global:
   systemName: car-rent-system
-  namespace: car-rent-system
+  backend:
+    pathBase: "/api/backend"

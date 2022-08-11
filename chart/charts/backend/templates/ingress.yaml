@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ing-{{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: backend-service
+{{ include "app.labels" . | indent 4 }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: minikube.my
+      http:
+        paths:
+          - path: {{ .Values.global.backend.pathBase }}
+            pathType: Prefix
+            backend:
+              service:
+                name: svc-{{ .Chart.Name }}
+                port:
+                  name: http

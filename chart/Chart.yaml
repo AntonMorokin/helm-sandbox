@@ -1,6 +1,6 @@
 apiVersion: v2
 name: car-rent-system
-description: A Helm chart for Kubernetes
+description: Car rent system is the system that help people rent car (i.e. car sharing).
 type: application
 
 version: 1.0.0
@@ -9,4 +9,6 @@ appVersion: "1.0.0"
 
 dependencies:
   - name: db-postgres
+    version: 1.0.0
+  - name: backend
     version: 1.0.0

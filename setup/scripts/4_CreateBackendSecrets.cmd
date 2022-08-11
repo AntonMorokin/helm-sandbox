@@ -1,0 +1,1 @@
+kubectl create secret generic secrets-backend --from-literal=dbConnectionString="Host=sts-db-postgres-0.svc-db-postgres.car-rent-system.svc;Database=crs;Username=postgres;Password=1234" -n car-rent-system
