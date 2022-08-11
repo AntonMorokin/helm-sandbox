@@ -1,5 +1,6 @@
 ﻿using Crs.Backend.Controllers.Factories;
 using Crs.Backend.Controllers.Requests.Create;
+using Crs.Backend.Controllers.Requests.Get.Cars;
 using Crs.Backend.Controllers.Responses;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Crs.Backend.Model;
@@ -25,18 +26,18 @@ namespace Crs.Backend.Controllers
 
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CarResponse>))]
-        public async Task<IActionResult> GetAsync([FromQuery] int? skip, [FromQuery] int count)
+        public async Task<IActionResult> GetAsync([FromQuery] GetCarsRequest request)
         {
-            var cars = await _carsRepository.GetAsync(skip ?? 0, count);
+            var cars = await _carsRepository.GetAsync(request.Skip ?? 0, request.Count);
             return Ok(cars.Select(ResponseFactory.CreateResponse));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CarResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetCarByIdRequest request)
         {
-            var car = await _carsRepository.GetByIdAsync(id);
+            var car = await _carsRepository.GetByIdAsync(request.Id);
             if (car is null)
             {
                 return NotFound();
@@ -48,9 +49,9 @@ namespace Crs.Backend.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CarResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] string number)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetCarByNumberRequest request)
         {
-            var car = await _carsRepository.GetByNumberAsync(number);
+            var car = await _carsRepository.GetByNumberAsync(request.Number);
             if (car is null)
             {
                 return NotFound();

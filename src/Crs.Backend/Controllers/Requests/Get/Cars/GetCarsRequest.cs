@@ -1,6 +1,6 @@
-﻿namespace Crs.Backend.Controllers.Requests.Get.Clients
+﻿namespace Crs.Backend.Controllers.Requests.Get.Cars
 {
-    public sealed class GetClientsRequest
+    public sealed class GetCarsRequest
     {
         public int? Skip { get; set; }
 

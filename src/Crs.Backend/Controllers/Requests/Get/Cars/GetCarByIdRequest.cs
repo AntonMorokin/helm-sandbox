@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Crs.Backend.Controllers.Requests.Get.Clients
+namespace Crs.Backend.Controllers.Requests.Get.Cars
 {
-    public sealed class GetClientByIdRequest
+    public sealed class GetCarByIdRequest
     {
         [FromRoute]
         public int Id { get; set; }

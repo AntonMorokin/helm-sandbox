@@ -44,43 +44,25 @@ namespace Crs.Backend.Controllers
 
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RideResponse>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAsync([FromQuery] GetRidesRequest request)
         {
             var rides = await _ridesRepository.GetAsync(request.WithClients, request.WithCars, request.Skip ?? 0, request.Count);
-            if (!rides.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(rides.Select(ResponseFactory.CreateResponse));
         }
 
         [HttpGet("client/{ClientId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RideResponse>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetForClientAsync([FromQuery] GetRidesForClientRequest request)
         {
             var rides = await _ridesRepository.GetForClientAsync(request.WithCars, request.ClientId, request.Skip ?? 0, request.Count);
-            if (!rides.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(rides.Select(ResponseFactory.CreateResponse));
         }
 
         [HttpGet("car/{CarId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RideResponse>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetForCarAsync([FromQuery] GetRidesForCarRequest request)
         {
             var rides = await _ridesRepository.GetForClientAsync(request.WithClients, request.CarId, request.Skip ?? 0, request.Count);
-            if (!rides.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(rides.Select(ResponseFactory.CreateResponse));
         }
 
