@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dp-{{ .Chart.Name }}
+  name: dep-{{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: backend-service
@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: amorokin/crs-backend:{{ .Chart.AppVersion }}
+          image: amorokin/crsbackend:{{ .Chart.AppVersion }}
           ports:
             - name: http
               containerPort: 80

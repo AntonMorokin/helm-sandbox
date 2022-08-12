@@ -23,3 +23,10 @@ app.kubernetes.io/part-of: {{ .Values.global.systemName }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ include "chart.selector" . }}
 {{- end -}}
+
+{{/*
+    Template for creating path base for API services
+*/}}
+{{- define "webService.path" -}}
+{{ .Values.global.urlPrefix }}{{ .Values.global.apiPrefix }}/{{ .Chart.Name }}
+{{- end -}}

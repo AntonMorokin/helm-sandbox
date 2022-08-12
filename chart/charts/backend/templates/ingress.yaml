@@ -9,10 +9,10 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: minikube.my
+    - host: {{ .Values.global.hostDns }}
       http:
         paths:
-          - path: {{ .Values.global.backend.pathBase }}
+          - path: {{ include "webService.path" . }}
             pathType: Prefix
             backend:
               service:

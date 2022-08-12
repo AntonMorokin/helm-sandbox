@@ -2,6 +2,7 @@ using Crs.Backend.Host.Conventions;
 using Crs.Backend.Logic.Repositories.Implementations;
 using Crs.Backend.Logic.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,16 +57,20 @@ namespace Crs.Backend
             if (!string.IsNullOrEmpty(pathBase))
             {
                 app.UsePathBase(pathBase);
+                app.UseRouting();
+
                 app.Logger.LogInformation($"PathBase has been set to {pathBase}");
             }
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.MapControllers();
+
+            app.MapFallback((HttpContext context) =>
+            {
+                return $"Can not find appropriate handler. Path base: {context.Request.PathBase}; path: {context.Request.Path}";
+            });
 
             app.Run();
         }

@@ -4,4 +4,4 @@ metadata:
   name: cm-{{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
 data:
-  pathBase: {{ .Values.global.backend.pathBase }}
+  pathBase: {{ include "webService.path" . }}

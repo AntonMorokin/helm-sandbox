@@ -1,4 +1,5 @@
 global:
   systemName: car-rent-system
-  backend:
-    pathBase: "/api/backend"
+  hostDns: minikube.my
+  urlPrefix: /car-rent-system
+  apiPrefix: /api
