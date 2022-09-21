@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Temporary files for local debugging only
 temp/
+
+# Directory with built and published binaries
+published/
