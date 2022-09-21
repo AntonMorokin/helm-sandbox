@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CreateNewVersion": {
+      "commandName": "Project",
+      "commandLineArgs": "-d \"C:\\Data\\repos\\HelmSandbox\""
+    }
+  }
+}
