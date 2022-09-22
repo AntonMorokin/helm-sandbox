@@ -4,9 +4,9 @@ using System.IO;
 
 namespace CliTools.CreateNextVersion
 {
-    internal sealed class VersionService
+    internal sealed class VersionTools
     {
-        public string GetNewVersion(Settings settings)
+        public static string GetNextVersion(Settings settings)
         {
             var lastTag = RunGitProcess("for-each-ref refs/tags/ --sort=\"-committerdate\" --count=1 --format=\"%(refname:short)\"", settings)
                 .ReadToEnd()
@@ -41,7 +41,7 @@ namespace CliTools.CreateNextVersion
 
             if (settings.NeedSaveNewVersionInEnvVariable)
             {
-                Environment.SetEnvironmentVariable(settings.NewVersionEnvVariable, newVersion.ToString(3), EnvironmentVariableTarget.User);
+                Environment.SetEnvironmentVariable(Settings.NewVersionEnvironmentVariableName, newVersion.ToString(3), EnvironmentVariableTarget.User);
             }
 
             return newVersion.ToString(3);

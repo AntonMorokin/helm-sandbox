@@ -10,7 +10,8 @@ COPY ["Crs.Backend/Crs.Backend.csproj", "Crs.Backend/"]
 RUN dotnet restore "Crs.Backend/Crs.Backend.csproj"
 COPY . .
 WORKDIR "/src/Crs.Backend"
-RUN dotnet build "Crs.Backend.csproj" -c Release -o /app/build
+ARG BUILD_VERSION
+RUN dotnet build "Crs.Backend.csproj" -c Release -o /app/build /p:Version=$BUILD_VERSION
 
 FROM build AS publish
 RUN dotnet publish "Crs.Backend.csproj" -c Release -o /app/publish /p:UseAppHost=false

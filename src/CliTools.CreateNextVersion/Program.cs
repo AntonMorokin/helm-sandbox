@@ -17,8 +17,8 @@ namespace CliTools.CreateNextVersion
 
             argsParsingResult.WithParsed(s =>
             {
-                var newVersion = new VersionService().GetNewVersion(s);
-                Console.WriteLine($"New version will be '{newVersion}'");
+                var newVersion = VersionTools.GetNextVersion(s);
+                Console.WriteLine(newVersion);
             });
         }
     }
