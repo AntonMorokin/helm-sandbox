@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CliTools.UpdateChartAppVersion": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"C:\\Data\\repos\\HelmSandbox\\chart\" -v \"1.0.2\" -d backend"
+    }
+  }
+}

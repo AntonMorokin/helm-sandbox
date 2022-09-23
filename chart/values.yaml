@@ -1,5 +1,5 @@
 global:
-  systemName: car-rent-system
-  hostDns: minikube.my
-  urlPrefix: /car-rent-system
-  apiPrefix: /api
+  systemName: "car-rent-system"
+  hostDns: "minikube.my"
+  urlPrefix: "/car-rent-system"
+  apiPrefix: "/api"
