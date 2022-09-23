@@ -7,7 +7,7 @@ using YamlDotNet.RepresentationModel;
 
 namespace CliTools.UpdateChartAppVersion
 {
-    internal static class ChartService
+    internal static class ChartTools
     {
         private static readonly string DocumentSeparator = "..." + Environment.NewLine;
 
@@ -41,7 +41,6 @@ namespace CliTools.UpdateChartAppVersion
             var chart = (YamlMappingNode)ys.Documents.Single().RootNode;
 
             UpdateStringValue(chart.Children["version"], newVersion);
-            UpdateStringValue(chart.Children["appVersion"], newVersion);
 
             var dependencies = (YamlSequenceNode)chart.Children["dependencies"];
             foreach (var dependency in dependencies.Children.OfType<YamlMappingNode>())
@@ -63,7 +62,7 @@ namespace CliTools.UpdateChartAppVersion
         {
             foreach (var dependency in dependenciesForUpdating)
             {
-                var chartFilePath = Path.Combine(chartDirectory, dependency, "Chart.yaml");
+                var chartFilePath = Path.Combine(chartDirectory, "charts", dependency, "Chart.yaml");
                 var ys = LoadYaml(chartFilePath);
 
                 var chart = (YamlMappingNode)ys.Documents.Single().RootNode;

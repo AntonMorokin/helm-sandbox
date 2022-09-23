@@ -17,7 +17,7 @@ namespace CliTools.UpdateChartAppVersion
 
             result.WithParsed(s =>
             {
-                ChartService.UpdateVersion(s);
+                ChartTools.UpdateVersion(s);
             });
         }
     }
