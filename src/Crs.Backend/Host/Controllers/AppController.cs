@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Crs.Backend.Host.Controllers
 {
@@ -18,6 +19,13 @@ namespace Crs.Backend.Host.Controllers
         public IActionResult Ready()
         {
             return Ok();
+        }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        public string Version()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version!.ToString(3);
         }
     }
 }
