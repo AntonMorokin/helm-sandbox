@@ -13,7 +13,7 @@ function BuildServices($version) {
     }
     
     Write-Host "Building Crs.Backend service"
-    dotnet restore src    
+    dotnet restore src
     dotnet build src\Crs.Backend -c Release --no-restore --no-self-contained /p:Version=$version
     
     Write-Host "Publishing Crs.Backend service"
