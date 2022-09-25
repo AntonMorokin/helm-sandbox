@@ -1,34 +1,44 @@
-echo @off
+function ReleaseNewVersion($needToPushChanges) {
+    Write-Host "Releasing new version"
+    
+    Write-Host "Cleaning repo"
+    
+    git reset --hard
 
-echo "Cleaning repo"
-git reset --hard
-rm temp/cli-tools -r 2>$null
+    if (Test-Path published\cli-tools) {
+        Remove-Item published\cli-tools -Recurse
+    }
+    
+    Write-Host "Building CLI tools"
+    
+    dotnet restore src
 
-echo "Building CLI tools"
+    dotnet build src\CliTools\CliTools.CreateNextVersion -c Release --no-restore --no-self-contained
+    dotnet build src\CliTools\CliTools.UpdateChartVersion -c Release --no-restore --no-self-contained
 
-dotnet restore src
-dotnet build src -c Release --no-restore --no-self-contained
-dotnet publish src/CliTools/CliTools.CreateNextVersion -c Release -o temp/cli-tools/version --no-self-contained --no-build
-dotnet publish src/CliTools/CliTools.UpdateChartVersion -c Release -o temp/cli-tools/chart --no-self-contained --no-build
+    dotnet publish src\CliTools\CliTools.CreateNextVersion -c Release -o published\cli-tools\version --no-self-contained --no-build
+    dotnet publish src\CliTools\CliTools.UpdateChartVersion -c Release -o published\cli-tools\chart --no-self-contained --no-build
+    
+    Write-Host "Getting release next version"
+    
+    $version = published\cli-tools\version\CliTools.CreateNextVersion.exe
+    
+    Write-Host "Next release version is $version"
+    Write-Host "Updating chart versions"
+    
+    published\cli-tools\chart\CliTools.UpdateChartVersion.exe -f chart -v $version -d backend
+    
+    Write-Host "Committing changes"
+    
+    git add --all
+    git commit -m "New version released: $version"
+    git tag $version
 
-echo "Getting release next version"
+    if ($needToPushChanges -eq "true") {
+        git push --tags origin HEAD
+    }
 
-$version = temp/cli-tools/version/CliTools.CreateNextVersion.exe
+    Write-Host "Done"
 
-echo "Next release version is $version"
-echo "Updating chart versions"
-
-temp/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v $version -d backend
-
-echo "Committing changes"
-
-git add --all
-git commit -m "New version released: $version"
-git tag $version
-# git push --tags origin HEAD
-
-echo "Cleaning up temp files"
-rm temp/cli-tools -r
-
-echo "Done"
-echo @on
+    return $version
+}
