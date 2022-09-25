@@ -52,7 +52,7 @@ jobs:
     - name: Running Crs.Backend.Tests
       run: dotnet test published\tests\Crs.Backend.Tests.dll -- NUnit.TestOutputXml=..\test-results
     - name: Save tests results
-        uses: actions/upload-artifact@v3
-        with:
-          name: crsbackend-test-results
-          path: published\test-results\Crs.Backend.Tests.xml
+      uses: actions/upload-artifact@v3
+      with:
+        name: crsbackend-test-results
+        path: published\test-results\Crs.Backend.Tests.xml
