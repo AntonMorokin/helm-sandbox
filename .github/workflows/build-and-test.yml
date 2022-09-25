@@ -26,7 +26,10 @@ jobs:
   build-services:
     name: Build services
     runs-on: [self-hosted, Windows]
+    needs: setup-build-version
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - name: Clean up build dir
       run: if (Test-Path published\backend) { Remove-Item published\backend -Recurse }
     - name: Building Crs.Backend service
@@ -38,6 +41,7 @@ jobs:
   run-tests:
     name: Run tests
     runs-on: [self-hosted, Windows]
+    needs: build-services
     steps:
     - name: Cleaning up tests dir
       run: |
