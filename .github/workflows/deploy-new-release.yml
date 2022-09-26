@@ -32,7 +32,8 @@ jobs:
       run: |
         $version = published/cli-tools/version/CliTools.CreateNextVersion.exe
         Write-Host "::set-output name=version::$version"
-        Write-Host "New release version is ${{ steps.ver.outputs.version }}"
+    - name: Show new release version
+      run: Write-Host "New release version is ${{ steps.ver.outputs.version }}"
     - name: Updating chart versions
       run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v ${{ steps.ver.outputs.version }} -d backend
     - name: Committing changes
