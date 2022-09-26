@@ -47,7 +47,7 @@ jobs:
     needs: release-new-version
     uses: ./.github/workflows/build-and-test.yml
     with:
-      version: ${{ env.CMS_BUILD_VERSION }}
+      version: $env:CMS_BUILD_VERSION
   delivery-artifacts:
     name: Create and upload build artifacts
     runs-on: [self-hosted, Windows]
