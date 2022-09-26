@@ -31,13 +31,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Clean up build dir
-      run: if (Test-Path published\backend) { Remove-Item published\backend -Recurse }
+      run: if (Test-Path published/backend) { Remove-Item published/backend -Recurse }
     - name: Building Crs.Backend service
       run: |
         dotnet restore src
-        dotnet build src\Crs.Backend -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
+        dotnet build src/Crs.Backend -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
     - name: Publishing Crs.Backend service
-      run: dotnet publish src\Crs.Backend -c Release -o published\backend --no-self-contained --no-build
+      run: dotnet publish src/Crs.Backend -c Release -o published/backend --no-self-contained --no-build
   run-tests:
     name: Run tests
     runs-on: [self-hosted, Windows]
@@ -45,18 +45,18 @@ jobs:
     steps:
     - name: Cleaning up tests dir
       run: |
-        if (Test-Path published\tests) { Remove-Item published\tests -Recurse }
-        if (Test-Path published\test-results) { Remove-Item published\test-results -Recurse }
+        if (Test-Path published/tests) { Remove-Item published/tests -Recurse }
+        if (Test-Path published/test-results) { Remove-Item published/test-results -Recurse }
     - name: Building Crs.Backend.Tests project
       run: |
         dotnet restore src
-        dotnet build src\Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
+        dotnet build src/Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
     - name: Publishing Crs.Backend.Tests project
-      run: dotnet publish src\Crs.Backend.Tests -c Release -o published\tests --no-self-contained --no-build
+      run: dotnet publish src/Crs.Backend.Tests -c Release -o published/tests --no-self-contained --no-build
     - name: Running Crs.Backend.Tests
-      run: dotnet test published\tests\Crs.Backend.Tests.dll -- NUnit.TestOutputXml=..\test-results
+      run: dotnet test published/tests/Crs.Backend.Tests.dll -- NUnit.TestOutputXml=../test-results
     - name: Save tests results
       uses: actions/upload-artifact@v3
       with:
         name: crsbackend-test-results
-        path: published\test-results\Crs.Backend.Tests.xml
+        path: published/test-results/Crs.Backend.Tests.xml

@@ -16,22 +16,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Cleaning up CLI tools dir
-      run: if (Test-Path published\cli-tools) { Remove-Item published\cli-tools -Recurse }
+      run: if (Test-Path published/cli-tools) { Remove-Item published/cli-tools -Recurse }
     - name: Building CLI tools
       run: |
         dotnet restore src
-        dotnet build src\CliTools\CliTools.CreateNextVersion -c Release --no-restore --no-self-contained
-        dotnet build src\CliTools\CliTools.UpdateChartVersion -c Release --no-restore --no-self-contained
+        dotnet build src/CliTools/CliTools.CreateNextVersion -c Release --no-restore --no-self-contained
+        dotnet build src/CliTools/CliTools.UpdateChartVersion -c Release --no-restore --no-self-contained
     - name: Publishing CLI tools
       run: |
-        dotnet publish src\CliTools\CliTools.CreateNextVersion -c Release -o published\cli-tools\version --no-self-contained --no-build
-        dotnet publish src\CliTools\CliTools.UpdateChartVersion -c Release -o published\cli-tools\chart --no-self-contained --no-build
+        dotnet publish src/CliTools/CliTools.CreateNextVersion -c Release -o published/cli-tools/version --no-self-contained --no-build
+        dotnet publish src/CliTools/CliTools.UpdateChartVersion -c Release -o published/cli-tools/chart --no-self-contained --no-build
     - name: Getting next release version
       run: |
-        $env:CMS_BUILD_VERSION = published\cli-tools\version\CliTools.CreateNextVersion.exe
+        $env:CMS_BUILD_VERSION = published/cli-tools/version/CliTools.CreateNextVersion.exe
         Write-Host "Next release version is $env:CMS_BUILD_VERSION"
     - name: Updating chart versions
-      run: published\cli-tools\chart\CliTools.UpdateChartVersion.exe -f chart -v $env:CMS_BUILD_VERSION -d backend
+      run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v $env:CMS_BUILD_VERSION -d backend
     - name: Committing changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,7 @@ jobs:
   build-and-test:
     name: Build and test services
     needs: release-new-version
-    uses: ./.github/workflows/build-and-test.yaml@HEAD
+    uses: ./.github/workflows/build-and-test.yaml
     with:
       version: $env:CMS_BUILD_VERSION
   delivery-artifacts:
@@ -53,7 +53,7 @@ jobs:
     steps:
     - name: Build Docker image
       run: |
-        docker build -f src\Crs.Backend\Dockerfile `
+        docker build -f src/Crs.Backend/Dockerfile `
         -t amorokin/crsbackend:$env:CMS_BUILD_VERSION `
         --build-arg BUILD_VERSION=$env:CMS_BUILD_VERSION `
         src
@@ -62,7 +62,7 @@ jobs:
         $env:DOCKER_HUB_TOKEN | docker login -u $env:DOCKER_HUB_LOGIN --password-stdin
         docker push amorokin/crsbackend:$env:CMS_BUILD_VERSION
     - name: Packaging chart
-      run: helm package chart --version $env:CMS_BUILD_VERSION -d published\charts
+      run: helm package chart --version $env:CMS_BUILD_VERSION -d published/charts
   deploy-release:
     name: Deploy release to local kubernetes cluster
     runs-on: [self-hosted, Windows]
@@ -70,7 +70,7 @@ jobs:
     steps:
     - name: Upgrade chart to new version
       run: |
-        helm upgrade car-rent-system published\charts\car-rent-system-$env:CMS_BUILD_VERSION.tgz `
+        helm upgrade car-rent-system published/charts/car-rent-system-$env:CMS_BUILD_VERSION.tgz `
         --kube-context crs `
         --atomic `
         --cleanup-on-fail `
