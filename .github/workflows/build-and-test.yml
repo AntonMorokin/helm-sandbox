@@ -23,6 +23,8 @@ jobs:
       run: $env:CMS_BUILD_VERSION = ${{ inputs.version }}
     - name: Setup default build version if needed
       run: if (($null -eq $env:CMS_BUILD_VERSION) -or ($env:CMS_BUILD_VERSION -eq "")) { $env:CMS_BUILD_VERSION = "1.0.0" }
+    - name: Show build version
+      run: Write-Host "CMS build version is $env:CMS_BUILD_VERSION"
   build-services:
     name: Build services
     runs-on: [self-hosted, Windows]

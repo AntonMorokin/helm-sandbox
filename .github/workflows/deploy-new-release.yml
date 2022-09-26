@@ -30,7 +30,7 @@ jobs:
     - name: Getting next release version
       run: |
         $env:CMS_BUILD_VERSION = published/cli-tools/version/CliTools.CreateNextVersion.exe
-        Write-Host "Next release version is $env:CMS_BUILD_VERSION"
+        Write-Host "New release version is $env:CMS_BUILD_VERSION"
     - name: Updating chart versions
       run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v $env:CMS_BUILD_VERSION -d backend
     - name: Committing changes
