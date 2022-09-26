@@ -43,7 +43,7 @@ jobs:
   build-and-test:
     name: Build and test services
     needs: release-new-version
-    uses: .\.github\workflows\build-and-test.yaml
+    uses: .\.github\workflows\build-and-test.yaml@HEAD
     with:
       version: $env:CMS_BUILD_VERSION
   delivery-artifacts:
