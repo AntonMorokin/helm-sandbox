@@ -12,39 +12,43 @@ on:
 defaults:
   run:
     shell: pwsh
-env:
-  CMS_BUILD_VERSION: ""
 jobs:
   setup-build-version:
     name: Setup build version
     runs-on: [self-hosted, Windows]
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     steps:
-    - name: Setup build version from inputs
-      run: Write-Host "CMS_BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
     - name: Setup default build version if needed
-      run: if (${{ env.CMS_BUILD_VERSION }} -eq "") { Write-Host "CMS_BUILD_VERSION=1.0.0" >> $GITHUB_ENV }
+      id: ver
+      run: |
+        if ("${{ inputs.version }}" -eq "") {
+          Write-Host "::set-output name=version::1.0.0"
+        } else {
+          Write-Host "::set-output name=version::${{ inputs.version }}"
+        }
     - name: Show build version
-      run: Write-Host "CMS build version is ${{ env.CMS_BUILD_VERSION }}"
+      run: Write-Host "CMS build version is ${{ steps.ver.outputs.version }}"
   build-services:
     name: Build services
     runs-on: [self-hosted, Windows]
     needs: setup-build-version
     steps:
     - name: Checkout repository
+      if: ${{ inputs.version == "" }}
       uses: actions/checkout@v3
-      if: ${{ (inputs.version == null) || (inputs.version == '') }}
     - name: Clean up build dir
       run: if (Test-Path published/backend) { Remove-Item published/backend -Recurse }
     - name: Building Crs.Backend service
       run: |
         dotnet restore src
-        dotnet build src/Crs.Backend -c Release --no-restore --no-self-contained /p:Version=${{ env.CMS_BUILD_VERSION }}
+        dotnet build src/Crs.Backend -c Release --no-restore --no-self-contained /p:Version=${{ needs.setup-build-version.outputs.version }}
     - name: Publishing Crs.Backend service
       run: dotnet publish src/Crs.Backend -c Release -o published/backend --no-self-contained --no-build
   run-tests:
     name: Run tests
     runs-on: [self-hosted, Windows]
-    needs: build-services
+    needs: [setup-build-version, build-services]
     steps:
     - name: Cleaning up tests dir
       run: |
@@ -53,7 +57,7 @@ jobs:
     - name: Building Crs.Backend.Tests project
       run: |
         dotnet restore src
-        dotnet build src/Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=${{ env.CMS_BUILD_VERSION }}
+        dotnet build src/Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=${{ needs.setup-build-version.outputs.version }}
     - name: Publishing Crs.Backend.Tests project
       run: dotnet publish src/Crs.Backend.Tests -c Release -o published/tests --no-self-contained --no-build
     - name: Running Crs.Backend.Tests

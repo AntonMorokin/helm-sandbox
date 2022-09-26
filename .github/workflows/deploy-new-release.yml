@@ -11,6 +11,8 @@ jobs:
   release-new-version:
     name: Release new version
     runs-on: [self-hosted, Windows]
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -38,40 +40,42 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git add --all
-        git commit -m "New version released: ${{ steps.ver.output.version }}"
-        git tag ${{ steps.ver.output.version }}
+        git commit -m "New version released: ${{ steps.ver.outputs.version }}"
+        git tag ${{ steps.ver.outputs.version }}
         git push --tags origin HEAD
   build-and-test:
     name: Build and test services
     needs: release-new-version
     uses: ./.github/workflows/build-and-test.yml
     with:
-      version: $env:CMS_BUILD_VERSION
+      version: ${{ needs.release-new-version.outputs.version }}
   delivery-artifacts:
     name: Create and upload build artifacts
     runs-on: [self-hosted, Windows]
-    needs: build-and-test
+    needs: [release-new-version, build-and-test]
+    env:
+      build-version: ${{ needs.release-new-version.outputs.version }}
     steps:
     - name: Build Docker image
       run: |
         docker build -f src/Crs.Backend/Dockerfile `
-        -t amorokin/crsbackend:${{ env.CMS_BUILD_VERSION }} `
-        --build-arg BUILD_VERSION=${{ env.CMS_BUILD_VERSION }} `
+        -t amorokin/crsbackend:${{ env.build-version }} `
+        --build-arg BUILD_VERSION=${{ env.build-version }} `
         src
     - name: Pushing image to Docker Hub
       run: |
         $env:DOCKER_HUB_TOKEN | docker login -u $env:DOCKER_HUB_LOGIN --password-stdin
-        docker push amorokin/crsbackend:${{ env.CMS_BUILD_VERSION }}
+        docker push amorokin/crsbackend:${{ env.build-version }}
     - name: Packaging chart
-      run: helm package chart --version ${{ env.CMS_BUILD_VERSION }} -d published/charts
+      run: helm package chart --version ${{ env.build-version }} -d published/charts
   deploy-release:
     name: Deploy release to local kubernetes cluster
     runs-on: [self-hosted, Windows]
-    needs: delivery-artifacts
+    needs: [release-new-version, delivery-artifacts]
     steps:
     - name: Upgrade chart to new version
       run: |
-        helm upgrade car-rent-system published/charts/car-rent-system-${{ env.CMS_BUILD_VERSION }}.tgz `
+        helm upgrade car-rent-system published/charts/car-rent-system-${{ needs.release-new-version.outputs.version }}.tgz `
         --kube-context crs `
         --atomic `
         --cleanup-on-fail `
