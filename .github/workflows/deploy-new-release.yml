@@ -29,11 +29,11 @@ jobs:
         dotnet publish src/CliTools/CliTools.UpdateChartVersion -c Release -o published/cli-tools/chart --no-self-contained --no-build
     - name: Getting next release version
       run: |
-        $version = published/cli-tools/version/CliTools.CreateNextVersion.exe
-        Write-Host "CMS_BUILD_VERSION=$version" >> $GITHUB_ENV
+        $env:CMS_BUILD_VERSION = published/cli-tools/version/CliTools.CreateNextVersion.exe
+        Write-Host "CMS_BUILD_VERSION=$env:CMS_BUILD_VERSION" >> $GITHUB_ENV
         Write-Host "New release version is $env:CMS_BUILD_VERSION"
     - name: Updating chart versions
-      run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v ${{ env.CMS_BUILD_VERSION }} -d backend
+      run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v $env:CMS_BUILD_VERSION -d backend
     - name: Committing changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
