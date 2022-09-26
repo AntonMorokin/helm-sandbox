@@ -7,8 +7,6 @@ on:
 defaults:
   run:
     shell: pwsh
-env:
-  CMS_BUILD_VERSION: ""
 jobs:
   release-new-version:
     name: Release new version
@@ -28,19 +26,20 @@ jobs:
         dotnet publish src/CliTools/CliTools.CreateNextVersion -c Release -o published/cli-tools/version --no-self-contained --no-build
         dotnet publish src/CliTools/CliTools.UpdateChartVersion -c Release -o published/cli-tools/chart --no-self-contained --no-build
     - name: Getting next release version
+      id: ver
       run: |
-        $env:CMS_BUILD_VERSION = published/cli-tools/version/CliTools.CreateNextVersion.exe
-        Write-Host "CMS_BUILD_VERSION=$env:CMS_BUILD_VERSION" >> $GITHUB_ENV
-        Write-Host "New release version is $env:CMS_BUILD_VERSION"
+        $version = published/cli-tools/version/CliTools.CreateNextVersion.exe
+        Write-Host "::set-output name=version::$version"
+        Write-Host "New release version is ${{ steps.ver.output.version }}"
     - name: Updating chart versions
-      run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v $env:CMS_BUILD_VERSION -d backend
+      run: published/cli-tools/chart/CliTools.UpdateChartVersion.exe -f chart -v ${{ steps.ver.output.version }} -d backend
     - name: Committing changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git add --all
-        git commit -m "New version released: ${{ env.CMS_BUILD_VERSION }}"
-        git tag ${{ env.CMS_BUILD_VERSION }}
+        git commit -m "New version released: ${{ steps.ver.output.version }}"
+        git tag ${{ steps.ver.output.version }}
         git push --tags origin HEAD
   build-and-test:
     name: Build and test services
