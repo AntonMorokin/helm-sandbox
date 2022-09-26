@@ -35,7 +35,7 @@ jobs:
     needs: setup-build-version
     steps:
     - name: Checkout repository
-      if: ${{ inputs.version == "" }}
+      if: ${{ inputs.version == '' }}
       uses: actions/checkout@v3
     - name: Clean up build dir
       run: if (Test-Path published/backend) { Remove-Item published/backend -Recurse }
