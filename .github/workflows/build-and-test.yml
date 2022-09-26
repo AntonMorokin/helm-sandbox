@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Setup build version from inputs
       run: $env:CMS_BUILD_VERSION = ${{ inputs.version }}
-    - name: Setup default version if needed
+    - name: Setup default build version if needed
       run: if (($null -eq $env:CMS_BUILD_VERSION) -or ($env:CMS_BUILD_VERSION -eq "")) { $env:CMS_BUILD_VERSION = "1.0.0" }
   build-services:
     name: Build services
