@@ -13,18 +13,18 @@ defaults:
   run:
     shell: pwsh
 env:
-  CMS_BUILD_VERSION: "1.0.0"
+  CMS_BUILD_VERSION: ""
 jobs:
   setup-build-version:
     name: Setup build version
     runs-on: [self-hosted, Windows]
     steps:
     - name: Setup build version from inputs
-      run: $env:CMS_BUILD_VERSION = ${{ inputs.version }}
+      run: Write-Host "CMS_BUILD_VERSION=${{ inputs.version }}" >> $GITHUB_ENV
     - name: Setup default build version if needed
-      run: if (($null -eq $env:CMS_BUILD_VERSION) -or ($env:CMS_BUILD_VERSION -eq "")) { $env:CMS_BUILD_VERSION = "1.0.0" }
+      run: if (${{ env.CMS_BUILD_VERSION }} -eq "") { Write-Host "CMS_BUILD_VERSION=1.0.0" >> $GITHUB_ENV }
     - name: Show build version
-      run: Write-Host "CMS build version is $env:CMS_BUILD_VERSION"
+      run: Write-Host "CMS build version is ${{ env.CMS_BUILD_VERSION }}"
   build-services:
     name: Build services
     runs-on: [self-hosted, Windows]
@@ -38,7 +38,7 @@ jobs:
     - name: Building Crs.Backend service
       run: |
         dotnet restore src
-        dotnet build src/Crs.Backend -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
+        dotnet build src/Crs.Backend -c Release --no-restore --no-self-contained /p:Version=${{ env.CMS_BUILD_VERSION }}
     - name: Publishing Crs.Backend service
       run: dotnet publish src/Crs.Backend -c Release -o published/backend --no-self-contained --no-build
   run-tests:
@@ -53,7 +53,7 @@ jobs:
     - name: Building Crs.Backend.Tests project
       run: |
         dotnet restore src
-        dotnet build src/Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=$env:CMS_BUILD_VERSION
+        dotnet build src/Crs.Backend.Tests -c Release --no-restore --no-self-contained /p:Version=${{ env.CMS_BUILD_VERSION }}
     - name: Publishing Crs.Backend.Tests project
       run: dotnet publish src/Crs.Backend.Tests -c Release -o published/tests --no-self-contained --no-build
     - name: Running Crs.Backend.Tests
