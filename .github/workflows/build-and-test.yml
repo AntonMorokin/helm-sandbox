@@ -30,7 +30,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      if: $ {{ (inputs.version == null) || (inputs.version == '') }}
+      if: ${{ (inputs.version == null) || (inputs.version == '') }}
     - name: Clean up build dir
       run: if (Test-Path published/backend) { Remove-Item published/backend -Recurse }
     - name: Building Crs.Backend service
