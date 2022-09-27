@@ -16,7 +16,7 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      {{ include "chart.selector" . }}
+{{ include "chart.selector" . | indent 6 }}
   template:
     metadata:
         name: pod-{{ .Chart.Name }}

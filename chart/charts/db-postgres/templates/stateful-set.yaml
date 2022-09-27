@@ -5,13 +5,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: database
-{{ include "app.labels" . | indent 4 }}
+{{ include "app.labelsWithVersion" . | indent 4 }}
 spec:
   serviceName: svc-{{ .Chart.Name }}
   replicas: 1
   selector:
     matchLabels:
-      {{ include "chart.selector" . }}
+{{ include "chart.selectorWithVersion" . | indent 6 }}
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +21,7 @@ spec:
       namespace: {{ .Release.Namespace }}
       labels:
         app.kubernetes.io/component: database
-{{ include "app.labels" . | indent 8 }}
+{{ include "app.labelsWithVersion" . | indent 8 }}
     spec:
       containers:
         - name: postgres

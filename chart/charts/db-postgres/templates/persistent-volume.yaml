@@ -4,7 +4,7 @@ metadata:
   name: pv-{{ .Chart.Name }}-0
   labels:
     app.kubernetes.io/component: database
-{{ include "app.labels" . | indent 4 }}
+{{ include "app.labelsWithVersion" . | indent 4 }}
 spec:
   storageClassName: sc-{{ .Chart.Name }}
   capacity: 

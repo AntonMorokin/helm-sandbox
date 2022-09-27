@@ -9,7 +9,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    {{ include "chart.selector" . }}
+{{ include "chart.selector" . | indent 4 }}
   ports:
     - name: http
       port: 5000
