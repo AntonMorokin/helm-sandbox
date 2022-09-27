@@ -2,10 +2,10 @@
 name: car-rent-system
 description: Car rent system is the system that help people rent car (i.e. car sharing).
 type: application
-version: "1.0.2"
+version: "1.0.3"
 kubeVersion: ">= 1.24.0"
 dependencies:
 - name: db-postgres
   version: "1.0.0"
 - name: backend
-  version: "1.0.2"
+  version: "1.0.3"
