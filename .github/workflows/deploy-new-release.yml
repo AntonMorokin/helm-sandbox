@@ -61,6 +61,7 @@ jobs:
       run: |
         docker build -f src/Crs.Backend/Dockerfile `
         -t amorokin/crsbackend:${{ env.build-version }} `
+        --no-cache `
         --build-arg BUILD_VERSION=${{ env.build-version }} `
         src
     - name: Pushing image to Docker Hub
